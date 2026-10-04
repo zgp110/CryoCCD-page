@@ -1,10 +1,8 @@
-# CryoCCD project page
+# CryoCCD project page (moved)
 
-Static project page for *Simulating Cryo-EM: Cycle-Consistent Predictor–Corrector Diffusion with Biophysical Modeling* (TMLR 2026).
+This repository is archived. The CryoCCD project page and code now live at:
 
-- `index.html` — page content
-- `assets/styles.css`, `assets/site.js` — styles, BibTeX copy, FID/CMMD toggle
-- `assets/images/` — figures exported from the paper (webp)
-- `static/CryoCCD_TMLR2026.pdf` — camera-ready PDF
+- Page: https://opensciagent.github.io/CryoCCD/
+- Code: https://github.com/OpenSciAgent/CryoCCD
 
-Deploy: push to a GitHub repo and enable Pages (branch `main`, root). `.nojekyll` is included.
+The old URL redirects to the new page.
