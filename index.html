@@ -41,6 +41,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Serif:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+      onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}]})"></script>
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
@@ -227,7 +231,7 @@
               then passed through physics-based projection and density conversion. (2) Realistic noise generation:
               synthetic images are translated into realistic noisy micrographs with cycle-consistent predictor–corrector
               diffusion and mask-guided contrastive learning. Within one diffusion step, the predictor and corrector advance
-              the state from <i>t</i><sub>i−1</sub> to the corrected state at <i>t</i><sub>i</sub>.
+              the state from \(t_{i-1}\) to the corrected state at \(t_i\).
             </figcaption>
           </figure>
 
@@ -239,7 +243,7 @@
             </article>
             <article>
               <h3>Particle placement</h3>
-              <p>RELION-derived picks and orientations blended with synthetic samples on <i>S</i><sup>3</sup>; class-specific rules for enzymes, polysomes and capsids.</p>
+              <p>RELION-derived picks and orientations blended with synthetic samples on \(S^3\); class-specific rules for enzymes, polysomes and capsids.</p>
             </article>
             <article>
               <h3>Multi-scale volume &amp; ice</h3>
@@ -253,9 +257,13 @@
 
           <div class="equation-panel">
             <p class="equation-label">Potential assembly and projection</p>
-            <p class="equation">
-              Φ(<b>r</b>) = Σ<sub>i=1..L</sub> ρ<sub>i</sub>( R(q<sub>i</sub>)<sup>−1</sup>(<b>r</b> − T<sub>i</sub>) ),
-              &nbsp;&nbsp; P(x, y) = ∫<sub>−z₀/2</sub><sup>z₀/2</sup> Φ(x, y, z) dz
+            <div class="equation-row">
+              <div class="equation">\[\Phi(\mathbf{r}) = \sum_{i=1}^{L} \rho_i\bigl(R(q_i)^{-1}(\mathbf{r}-T_i)\bigr)\]</div>
+              <div class="equation">\[P(x,y) = \int_{-z_0/2}^{z_0/2} \Phi(x,y,z)\,\mathrm{d}z\]</div>
+            </div>
+            <p class="equation-note">
+              The electrostatic potential of all \(L\) embedded particles (density \(\rho_i\), orientation \(q_i\), translation
+              \(T_i\)) is projected under the weak-phase approximation; the CTF is then applied in Fourier space.
             </p>
           </div>
 
@@ -296,7 +304,7 @@
           <div class="method-flow">
             <article>
               <h3>Cycle consistency</h3>
-              <p>A mask-conditioned generator <i>G</i><sub>AB</sub> and an unconditional <i>G</i><sub>BA</sub> are tied by an L1 cycle loss in both directions, so particle positions survive translation.</p>
+              <p>A mask-conditioned generator \(G_{AB}\) and an unconditional \(G_{BA}\) are tied by an L1 cycle loss in both directions, so particle positions survive translation.</p>
             </article>
             <article>
               <h3>Mask-guided contrastive learning</h3>
@@ -304,16 +312,15 @@
             </article>
             <article>
               <h3>Predictor–corrector sampling</h3>
-              <p>A mask-conditioned UniPC sampler in the half log-SNR domain: a <i>p</i>-th order predictor and a (<i>p</i>+1)-th order corrector per step.</p>
+              <p>A mask-conditioned UniPC sampler in the half log-SNR domain: a \(p\)-th order predictor and a \((p{+}1)\)-th order corrector per step.</p>
             </article>
           </div>
 
           <div class="equation-panel">
             <p class="equation-label">Training objective</p>
-            <p class="equation">
-              𝓛 = γ<sub>adv</sub>𝓛<sub>adv</sub> + γ<sub>cyc</sub>𝓛<sub>cyc</sub> + γ<sub>NCE</sub>𝓛<sub>NCE</sub>,
-              &nbsp;&nbsp; γ<sub>adv</sub> = 1, γ<sub>cyc</sub> = 3, γ<sub>NCE</sub> = 5
-            </p>
+            <div class="equation">\[\mathcal{L} = \gamma_{\text{adv}}\mathcal{L}_{\text{adv}} + \gamma_{\text{cyc}}\mathcal{L}_{\text{cyc}} + \gamma_{\text{NCE}}\mathcal{L}_{\text{NCE}}, \qquad \gamma_{\text{adv}}=1,\ \gamma_{\text{cyc}}=3,\ \gamma_{\text{NCE}}=5\]</div>
+            <div class="equation">\[\mathcal{L}_{\text{cyc}} = \mathbb{E}_{(\mathbf{x},\mathbf{m})}\bigl\|G_{BA}(G_{AB}(\mathbf{x},\mathbf{m}))-\mathbf{x}\bigr\|_1 + \mathbb{E}_{\mathbf{y}}\bigl\|G_{AB}(G_{BA}(\mathbf{y}),\varnothing)-\mathbf{y}\bigr\|_1\]</div>
+            <div class="equation">\[\mathcal{L}_{\text{NCE}} = -\log \frac{e^{\cos(q,k^+)/\tau}}{e^{\cos(q,k^+)/\tau} + \sum_{k^-} e^{\cos(q,k^-)/\tau}}\]</div>
             <p class="equation-note">
               The least-squares adversarial term carries the smallest weight; it serves only as an auxiliary
               distribution-matching regularizer on top of the diffusion sampler.
